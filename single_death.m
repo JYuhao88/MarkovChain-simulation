@@ -7,9 +7,9 @@ next = state;
 
 %% model parameter
 rho = 4e-1;
-d = 2e-1;
+d = 1e-1;
 r = rho/d;
-p = 0.8;
+p = 0.2;
 q = 1- p;
 
 ptime = zeros(1,traj);
@@ -42,7 +42,8 @@ figure;
 bar(sta(:, 1), sta(:, 3)/100);
 hold on;
 x = 0:max(state);
-y = binopdf(x, x+r-1, 1-p)*p;
+% y = binopdf(x, x+r-1, 1-p)*p;
+y = gamma(r+x)./(gamma(r).*gamma(x+1)).*(1-p).^x.*p.^r;
 plot(x, y, '-o');
 title('single-death');
 

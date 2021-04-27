@@ -1,6 +1,6 @@
 clear;
 % simulation parameter
-T = 10000;
+T = 3000;
 traj = 80000;
 state = zeros(1, traj);
 next = state;
@@ -34,7 +34,6 @@ while min(ptime) <T
     next(bjump) = state(bjump) - 1;
     next(~pjump) = state(~pjump);
 end
-tmp = tmp /jt;
 sta = tabulate(state);
 
 % plot
@@ -44,5 +43,7 @@ bar(sta(:, 1), sta(:, 3)/100);
 hold on;
 x = 0:max(state);
 y = binopdf(x, x+r-1, 1-p)*p;
+y = gamma(r+n)./(gamma(r).*gamma(n-1))*(1-p).^n*p^r;
 plot(x, y, '-o');
+title('single-death');
 
