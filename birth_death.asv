@@ -1,0 +1,65 @@
+clear;
+% simulation parameter
+T = 3000;
+traj = 100;
+N = 20;
+state = randi(N, [1, traj]);
+%state = zeros(1, traj);
+next = state;
+
+%% model parameter
+rho = 8;
+d = 2;
+r = rho/d;
+
+ptime = zeros(1,traj);
+% while min(ptime) < T
+%     pjump = (ptime < T);
+%     state(pjump) = next(pjump);
+%     lamda = rho + d*state(pjump);
+%     waitt = exprnd(lamda);
+%     ptime(pjump) = ptime(pjump) + waitt;
+%     
+%     dice = rand([1, traj]);
+%     fjump = (dice<= rho./(rho+state*d));
+%     bjump = ~fjump;
+%     
+%     fjump = fjump &pjump;
+%     bjump = bjump &pjump;
+%     next(fjump) = state(fjump) + 1;
+%     next(bjump) = state(bjump) - 1;
+%     next(~pjump) = state(~pjump);
+% end
+
+while min(ptime) < T
+    pjump = (ptime < T);
+    state(pjump) = next(pjump);
+    
+    ftime = exprnd(rho*ones(1, traj));
+    btime = exprnd(state*d);
+    
+    waitt = min([ftime, btime], 1);
+    ptime(pjump) = ptime(pjump) + waitt;
+    
+    fjump = (ftime>btime);
+    bjump = ~fjump;
+    
+    fjump = fjump &pjump;
+    bjump = bjump &pjump;
+    next(fjump) = state(fjump) + 1;
+    next(bjump) = state(bjump) - 1;
+    next(~pjump) = state(~pjump);
+end
+
+sta = tabulate(state);
+
+% plot
+close all
+figure;
+bar(sta(:, 1), sta(:, 3)/100);
+hold on;
+x = 0:max(state);
+%y = r.^x.*exp(-r)./factorial(x);
+y = poisspdf(x, rho/d);
+plot(x, y, '-o');
+

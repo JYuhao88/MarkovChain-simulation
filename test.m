@@ -1,0 +1,10 @@
+clear;
+N = 20;
+rho = 6;
+d = 2;
+vn1 = d*[1:N-1];
+v1 = rho*ones(1, N-1);
+v0 = [-rho, -(vn1+v1)];
+A = diag(vn1, -1) + diag(v0, 0) + diag(v1, 1);
+x = zeros(N, 1)\A;
+d = eigs(A, 20);
